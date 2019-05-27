@@ -22,17 +22,14 @@ new Vue({
     data: {
         cards: shuffleCards(),
         started: false,
-        lockBoard:false,
         hasFlippedCard:false,
+        lockBoard:false,
+        showModal: false,
         firstCard: null,
         secondCard:null,
-foundedCardsPairs:0,
-        showModal: false,
-
-
-
-        startTime: 0,
         timer: null,
+foundedCardsPairs:0,
+        startTime: 0,
         time: "--:--:---",
          },
 
