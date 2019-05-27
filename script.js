@@ -11,11 +11,10 @@ const cardTypes = [
 
 const allCards = [].concat(_.cloneDeep(cardTypes),_.cloneDeep(cardTypes)); // создание пары для каждого типа карт
 
-let shuffleCards = () => {
+// перемешивание карт
+const shuffleCards = () => {
      return _.shuffle(allCards);
 }
-
-
 
 new Vue({
     el: "#app",
