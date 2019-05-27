@@ -19,17 +19,16 @@
     <div class="cardsField">
 
         <div
-            v-for="card in cards"
-            class="card"
-            :class="{ white: card.isWhiteColor }"
-            :style="{ 'background-color': card.name }"
-            @click="flip( card )"
+                v-for="card in cards"
+                class="card"
+                :class="{ white: card.isWhiteColor }"
+                :style="{ 'background-color': card.name }"
+                @click="flip( card )"
         >
-
         </div>
-
     </div>
 
+    <!--перезапуск игры-->
     <button class="myButton" @click="resetGame">
         Старт
     </button>
@@ -38,23 +37,21 @@
         {{ time }}
     </span>
 
-
-    <div class="splash" v-if="showSplash">
+    <!--показать всплывающее окно, если showModal=true-->
+    <div class="modal" v-if="showModal">
 
         <div class="content">
-
             <div>
                 Вы выиграли!
             </div>
-
             <span class="timer">
                 Затраченное время: {{ time }}
             </span>
 
-            <button class="myButton" @click="showSplash=false">
+            <!--Скрыть всплывающее окно, при нажатии кнопки-->
+            <button class="myButton" @click="showModal=false">
                 ok
             </button>
-
         </div>
 
     </div>

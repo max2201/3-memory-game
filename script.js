@@ -1,19 +1,18 @@
 const cardTypes = [
-    { name: 'red',       isWhiteColor:true, founded:false },
-    { name: 'blue',      isWhiteColor:true, founded:false },
-    { name: 'green',     isWhiteColor:true, founded:false},
-    { name: 'yellow',    isWhiteColor:true, founded:false },
-    { name: 'orange',    isWhiteColor:true, founded:false },
-    { name: 'gray',      isWhiteColor:true, founded:false},
-    { name: 'turquoise', isWhiteColor:true, founded:false },
-    { name: 'violet',    isWhiteColor:true, founded:false },
+    { name: 'red',       isWhiteColor:false, founded:false },
+    { name: 'blue',      isWhiteColor:false, founded:false },
+    { name: 'green',     isWhiteColor:false, founded:false},
+    { name: 'yellow',    isWhiteColor:false, founded:false },
+    { name: 'orange',    isWhiteColor:false, founded:false },
+    { name: 'gray',      isWhiteColor:false, founded:false},
+    { name: 'turquoise', isWhiteColor:false, founded:false },
+    { name: 'violet',    isWhiteColor:false, founded:false },
 ];
 
-
-const cards = [].concat(_.cloneDeep(cardTypes),_.cloneDeep(cardTypes));
+const allCards = [].concat(_.cloneDeep(cardTypes),_.cloneDeep(cardTypes)); // создание пары для каждого типа карт
 
 let shuffleCards = () => {
-     return _.shuffle(cards);
+     return _.shuffle(allCards);
 }
 
 
@@ -29,7 +28,7 @@ new Vue({
         firstCard: null,
         secondCard:null,
 foundedCardsPairs:0,
-        showSplash: false,
+        showModal: false,
 
 
 
@@ -89,7 +88,7 @@ foundedCardsPairs:0,
             endGame(){
                 clearInterval(this.timer);
                 this.started = false;
-                this.showSplash = true;
+                this.showModal = true;
             },
 
 
@@ -113,13 +112,11 @@ foundedCardsPairs:0,
 
 
                    this.cards = shuffleCards();
-            //TODO:заменить each на стандартное
-                   _.each(this.cards, (card) => {
-                           card.isWhiteColor = true;
-                           card.founded = false;
-                       }
-                   );
 
+this.cards.forEach((card) => {
+    card.isWhiteColor = true;
+    card.founded = false;
+});
 
 
               },
