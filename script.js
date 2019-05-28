@@ -1,58 +1,60 @@
 const cardTypes = [
-    { name: 'red',       isWhiteColor:false, founded:false },
-    { name: 'blue',      isWhiteColor:false, founded:false },
-    { name: 'green',     isWhiteColor:false, founded:false},
-    { name: 'yellow',    isWhiteColor:false, founded:false },
-    { name: 'orange',    isWhiteColor:false, founded:false },
-    { name: 'gray',      isWhiteColor:false, founded:false},
-    { name: 'turquoise', isWhiteColor:false, founded:false },
-    { name: 'violet',    isWhiteColor:false, founded:false },
+    {name: 'red', isWhiteColor: true, founded: false},
+    {name: 'blue', isWhiteColor: true, founded: false},
+    {name: 'green', isWhiteColor: true, founded: false},
+    {name: 'yellow', isWhiteColor: true, founded: false},
+    {name: 'orange', isWhiteColor: true, founded: false},
+    {name: 'gray', isWhiteColor: true, founded: false},
+    {name: 'turquoise', isWhiteColor: true, founded: false},
+    {name: 'violet', isWhiteColor: true, founded: false},
 ];
 
-const allCards = [].concat(_.cloneDeep(cardTypes),_.cloneDeep(cardTypes)); // создание пары для каждого типа карт
+const allCards = [].concat(_.cloneDeep(cardTypes), _.cloneDeep(cardTypes)); // создание пары для каждого типа карт
 
 // перемешивание карт
 const shuffleCards = () => {
-     return _.shuffle(allCards);
+    return _.shuffle(allCards);
 }
 
 new Vue({
     el: "#app",
 
     data: {
-        cards: shuffleCards(),
-        started: false,
-        hasFlippedCard:false,
-        lockBoard:false,
-        showModal: false,
+        cards: shuffleCards(),//массив карточек
+        started: false,//началась ли игра
+        lockBoard: false,//блокировка поля
+        showModal: false,//видимость всплывающего окна
         firstCard: null,
-        secondCard:null,
+        secondCard: null,
         timer: null,
-foundedCardsPairs:0,
+        foundedCardsPairs: 0,//количество найденых пар
         startTime: 0,
         time: "--:--:---",
-         },
+    },
 
     methods:
         {
+            //изменение цвета карточки
+            flip(card) {
+                if (this.started && !card.founded && !this.lockBoard) {//Карточка реагирует только если игра началась, поле не заблокировано и карточка ещё не найдена
 
-            flip(card){
-                if (this.started&&!card.founded&&!this.lockBoard) {
-                    if (card === this.firstCard) return;
-                    card.isWhiteColor=false;
-                    if(!this.hasFlippedCard){
-                        this.hasFlippedCard=true;
-                        this.firstCard=card;
-                        return
+                    if (card === this.firstCard) //проверка повторноого нажатия на ту же карточку
+                        return;
+
+                    card.isWhiteColor = false;//смена цвета
+
+                    if (this.firstCard===null) {//проверка, выбрана ли первая карта
+                          this.firstCard = card;// выбор данной карты первой
+                          return;
                     }
-                    this.secondCard=card;
-                    this.hasFlippedCard=false;
+
+                    this.secondCard = card;//выбор карты второй
+
                     this.checkForMatch();
                 }
-
             },
 
-            checkForMatch(){
+            checkForMatch() {// сравнение выбраных карточек
                 if (this.firstCard.name === this.secondCard.name) {
                     this.disableCards();
                     return;
@@ -61,63 +63,57 @@ foundedCardsPairs:0,
                 this.unflipCards();
             },
 
-            disableCards(){
-                this.firstCard.founded=true;
-                this.secondCard.founded=true;
-                this.foundedCardsPairs++;
-                if(this.foundedCardsPairs===8){
-                 this.endGame();
+            disableCards() {//отметить карты найденными
+                this.firstCard.founded = true;
+                this.secondCard.founded = true;
+                this.foundedCardsPairs++;//счетчик найденых пар
+                if (this.foundedCardsPairs === cardTypes.length) {
+                    this.endGame();
+                    return;
                 }
                 this.resetBoard();
             },
 
-            unflipCards(){
-                this.lockBoard = true;
+            unflipCards() {//закрасить белым
+                this.lockBoard = true;//блокировка доски
                 setTimeout(() => {
-                    this.firstCard.isWhiteColor=true;
-                    this.secondCard.isWhiteColor=true;
-                    this.lockBoard = false;
+                    this.firstCard.isWhiteColor = true;
+                    this.secondCard.isWhiteColor = true;
                     this.resetBoard();
                 }, 500);
             },
 
-            endGame(){
-                clearInterval(this.timer);
-                this.started = false;
-                this.showModal = true;
+            endGame() {//завершение игры
+                clearInterval(this.timer);//остановить таймер
+                this.started = false;//остановить игру
+                this.showModal = true;//вывод всплывающего окна
+            },
+
+            resetBoard() {//сброс доски
+              this.lockBoard = false;
+              this.firstCard = this.secondCard = null;
+            },
+
+            resetGame() {//сброс игры при нажатии на кнопку Старт
+                //сброс
+                this.resetBoard();
+                this.started = true;
+                this.foundedCardsPairs = 0;
+                //запуск таймера
+                this.startTime = moment();
+                this.timer = setInterval(() => {
+                    this.time = moment(moment().diff(this.startTime)).format("mm:ss:SSS");
+                }, 1);
+                //перемешать карточки
+                this.cards = shuffleCards();
+                //сброс
+                this.cards.forEach((card) => {
+                    card.isWhiteColor = true;
+                    card.founded = false;
+                });
             },
 
 
-            resetBoard(){
-                this.hasFlippedCard = this.lockBoard = false;
-                this.firstCard = this.secondCard = null;
-            },
-            //TODO:пересмотреть resetgame и resetboard
-        resetGame(){
-                this.hasFlippedCard = this.lockBoard = false;
-                   this.firstCard = this.secondCard = null;
-
-                   this.started = true;
-                   this.foundedCardsPairs=0;
-
-
-                 this.startTime = moment();
-            this.timer = setInterval(() => {
-                this.time = moment(moment().diff(this.startTime)).format("mm:ss:SSS");
-            }, 1);
-
-
-                   this.cards = shuffleCards();
-
-this.cards.forEach((card) => {
-    card.isWhiteColor = true;
-    card.founded = false;
-});
-
-
-              },
-
-
-    }
+        }
 
 });
