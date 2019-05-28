@@ -90,8 +90,8 @@ new Vue({
             },
 
             resetBoard() {//сброс доски
-              this.lockBoard = false;
-              this.firstCard = this.secondCard = null;
+                this.lockBoard = false;
+                this.firstCard = this.secondCard = null;
             },
 
             resetGame() {//сброс игры при нажатии на кнопку Старт
@@ -106,13 +106,12 @@ new Vue({
                 }, 1);
                 //перемешать карточки
                 this.cards = shuffleCards();
-                //сброс
+                //сброс карточек
                 this.cards.forEach((card) => {
                     card.isWhiteColor = true;
                     card.founded = false;
                 });
             },
-
 
         }
 
